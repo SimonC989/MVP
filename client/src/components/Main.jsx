@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import $ from 'jquery';
 import ScoreBoard from './Scoreboard.jsx';
-import { get } from 'http';
 
 const MainContainer = styled.div`
   display: flex;
@@ -14,6 +13,9 @@ const Left = styled.div`
   align-items: center;
   flex-direction: column;
   width: 35%;
+  // background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmWTXObqhq4hBTOeU2eOo7ciA7gGawzGIOqB1Md53UXAWMDKtL');
+  // background-repeat: no-repeat;
+  // background-size: contain;
 `;
 
 const Text = styled.div`
@@ -43,7 +45,6 @@ const AddPlayerInput = styled.input`
 const List = styled.div`
   display: flex;
   flex-direction: column;
-  border: 2px solid red;
   width: 70%;
   padding: 5px;
 `;
@@ -68,7 +69,7 @@ const RemoveModule = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 35%;
+  width: 30%;
   height: 70%;
   background-color: rgba(124, 126, 141, 0.6);
 `;

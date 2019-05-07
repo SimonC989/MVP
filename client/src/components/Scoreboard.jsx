@@ -20,7 +20,6 @@ const Header = styled.div`
   display: flex;
   width: 90%;
   height: 30px;
-  border: 1px solid black;
   margin: 10px;
 `;
 
@@ -30,17 +29,16 @@ const Topic = styled.div`
   align-items: center;
   height: 100%;
   width: 20%;
-  background-color: purple;
   font-size: 20px;
   font-family: cursive;
-  color: white;
+  color: black;
   text-decoration: underline;
 `;
 
 const Board = styled.div`
   width: 90%;
-  margin: 15px;
-  border: 4px double black;
+  margin: 20px;
+  // border: 4px double black;
 `;
 
 const PlayerList = styled.div`
@@ -60,13 +58,25 @@ const Name = styled.div`
   align-items: center;
   height: 100%;
   width: 20%;
-  background-color: green;
   font-family: fantasy;
   font-size: 18px;
 `;
 
 const Count = styled(Name)`
-  background-color: skyblue;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const CountButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 24px;
+  width: 10%;
+  border: 1px solid black;
+  font-family: cursive;
+
 `;
 
 class ScoreBoard extends React.Component {
@@ -149,7 +159,7 @@ class ScoreBoard extends React.Component {
           </PlayerList>)
           : null }
         </Board>
-        <div onClick={() => this.setState({ number: Number(`${number * -1}`) })}>{word}</div>
+        <CountButton onClick={() => this.setState({ number: Number(`${number * -1}`) })}>{word}</CountButton>
       </Container>
     )
   }

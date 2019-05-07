@@ -6,14 +6,12 @@ import Main from './Main.jsx';
 
 const Page = styled.div`
   display: flex;
-  height: auto;
-  background-color: #ffd575;
+  height: 100%;
 `;
 
 const LeftNav = styled.div`
   display: flex;
   width: 5%;
-  background-color: #5495ff;
   flex-direction: column;
 `;
 
@@ -24,12 +22,10 @@ const LeftIcons = styled.div`
   margin-top: 180px;
   margin-bottom: 40px;
   height: auto;
-  background-color: #35ddff;
-  // border: 1px solid black;
   border-left: 0px;
   border-radius: 10px;
 
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0,0,0,0);
   transition: all 0.3s ease-in-out;
 
   :hover {
@@ -40,7 +36,6 @@ const LeftIcons = styled.div`
 
 const RightNav = styled.div`
   width: 5%;
-  background-color: #5495ff;
 `;
 
 const MainBody = styled.div`
@@ -49,14 +44,12 @@ const MainBody = styled.div`
 
 const TopContainer = styled.div`
   height: 150px;
-  background-color: #ab54bc;
 `;
 
 const TopNav = styled.div`
   display: flex;
   align-items: center;
   height: 40%;
-  background-color: #ffa100;
 `;
 
 const Title = styled.div`
@@ -67,11 +60,13 @@ const Title = styled.div`
   font-family: cursive;
   font-style: italic;
   font-weight: 400;
-  background-color: #169903;
+  background-image: linear-gradient(to right, white, #24cbe5, white);
+  color: black;
   height: 60%;
 `;
 
 const BottomContainer = styled.div`
+  height: auto;
 `;
 
 const GameIcon = styled.img`
@@ -85,6 +80,38 @@ const GameIcon = styled.img`
     height: width;
     z-index: 1;
   }
+`;
+
+const Detail = styled.div`
+  position: absolute;
+  width: 99%;
+  height: 98%;
+  background-color: rgba(124, 126, 141, 0.4);
+`;
+
+const DetailsContainer = styled.div`
+  position: relative;
+  margin: 5%;
+  width: 90%;
+  height: 80%;
+  background-color: white;
+`;
+
+const TextTitle = styled.div`
+  font-family: cursive;
+  font-size: 20px;
+  text-decoration: underline;
+  margin: 10px;
+`;
+
+const Text = styled.div`
+  margin: 20px;
+  font-size: 16px;
+`;
+
+const Link = styled.a`
+  font-size: 16px;
+  margin: 20px;
 `;
 
 class App extends React.Component {
@@ -137,10 +164,28 @@ class App extends React.Component {
     const { detailModule } = this.state;
     const { gameIndex } = this.state;
     const { gameDetails, playerList } = this.state;
+    let desc;
+    if (gameDetails) {
+      desc = gameDetails[gameIndex];
+    } 
     return (
       <div>        
         {gameDetails ?
         (<Page>
+          {detailModule ? 
+          <Detail onClick={() => this.setState({ detailModule: false })}>
+            <DetailsContainer>
+              <TextTitle>Description</TextTitle>
+              <Text>{desc.description}</Text>
+              <TextTitle>Minimum Players: {desc.minPlayers}</TextTitle>
+              <TextTitle>Maximum Players: {desc.maxPlayers}</TextTitle>
+              <TextTitle>Offical Site:</TextTitle>
+              <Link href={desc.officialUrl}>Official Site</Link>
+              <TextTitle>Rules:</TextTitle>
+              <Link href={desc.rulesUrl}>Rule Book!</Link>
+            </DetailsContainer>
+          </Detail>
+          : null }
           <LeftNav>
             <LeftIcons>
               {gameDetails ? gameDetails.map((game, index) => 
@@ -154,15 +199,13 @@ class App extends React.Component {
               <TopNav>
                 <Nav />
               </TopNav>
-              <Title>{gameDetails[gameIndex].name}</Title>
+              <Title onClick={() => this.setState({ detailModule: true })}>{gameDetails[gameIndex].name}</Title>
             </TopContainer>
             <BottomContainer>
               {playerList ? <Main title={gameDetails[gameIndex].name} players={playerList} /> : <Main title={gameDetails[gameIndex].name} />}
             </BottomContainer>
           </MainBody>
-          <RightNav>
-            bar
-          </RightNav>
+          <RightNav />
         </Page>)
         : 'Loading...' }
       </div>
