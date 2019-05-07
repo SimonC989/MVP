@@ -18,25 +18,41 @@ app.listen(port, () => {
 app.get('/all', (req, res) => {
   GameDetail.find()
     .then(data => res.send(data))
-    .catch(err => res.status(404).end(err));
+    .catch(err => res.sendStatus(404).end(err));
 });
 
 app.get('/players', (req, res) => {
-  Players.find()
+  const { game } = req.query;
+  ScoreBoard.find({ game: game})
     .then(players => res.send(players))
-    .catch(err => res.status(404).end(err));
+    .catch(err => res.sendStatus(404).end(err));
 });
 
 app.post('/addPlayer', (req, res) => {
-  const player = req.body.name;
-  Players.create({ name: player })
+  const { name } = req.body;
+  const { title } = req.body
+  const score = {
+    name: name,
+    game: title,
+    wins: 0,
+    good: 0,
+    evil: 0,
+  }
+  ScoreBoard.create(score)
     .then(() => res.sendStatus(201))
-    .catch(err => res.status(404).end(err));
+    .catch(err => res.sendStatus(404).end(err));
 });
 
 app.delete('/removePlayer', (req, res) => {
   const player = req.body.name;
-  Players.deleteOne({ name: player })
+  ScoreBoard.deleteOne({ name: player })
     .then(() => res.send(202))
-    .catch(err => res.status(404).end(err));
+    .catch(err => res.sendStatus(404).end(err));
+});
+
+app.patch('/updateScore', (req, res) => {
+  const { name, column, game, count } = req.body;
+  ScoreBoard.findOneAndUpdate({ name: name, game: game}, { [column]: count })
+    .then(() => res.send(202))
+    .catch(err => res.sendStatus(404).end(err));
 });

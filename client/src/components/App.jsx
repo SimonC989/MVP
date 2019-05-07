@@ -25,6 +25,17 @@ const LeftIcons = styled.div`
   margin-bottom: 40px;
   height: auto;
   background-color: #35ddff;
+  // border: 1px solid black;
+  border-left: 0px;
+  border-radius: 10px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease-in-out;
+
+  :hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+    transition: all 0.3s ease-in-out;
+  }
 `;
 
 const RightNav = styled.div`
@@ -84,6 +95,7 @@ class App extends React.Component {
       detailModule: false,
       gameDetails: null,
       gameIndex: 0,
+      playerList: null,
     }
   }
 
@@ -95,19 +107,36 @@ class App extends React.Component {
     $.ajax({
       method: 'GET',
       url: '/all',
-      success: werewolf => this.setState({ gameDetails: werewolf }),
+      success: werewolf => this.setState({ gameDetails: werewolf }, () => {
+        $.ajax({
+          method: 'GET',
+          url: '/players',
+          data: { game: this.state.gameDetails[this.state.gameIndex] },
+          success: players => this.setState({ playerList: players }),
+          error: err => console.log('App, did not get player list', err)
+        });
+      }),      
       error: (err) => console.log(err)
     });
   }
 
   changeIndex(index) {
-    this.setState({ gameIndex: index });
+    const { gameDetails, gameIndex } = this.state; 
+    this.setState({ gameIndex: index }, () => {
+      $.ajax({
+        method: 'GET',
+        url: '/players',
+        data: { game: gameDetails[gameIndex] },
+        success: players => this.setState({ playerList: players }),
+        error: err => console.log('Change index player list failed', err)
+      });
+    });
   }
 
   render() {
     const { detailModule } = this.state;
     const { gameIndex } = this.state;
-    const { gameDetails } = this.state;
+    const { gameDetails, playerList } = this.state;
     return (
       <div>        
         {gameDetails ?
@@ -128,7 +157,7 @@ class App extends React.Component {
               <Title>{gameDetails[gameIndex].name}</Title>
             </TopContainer>
             <BottomContainer>
-              <Main />
+              {playerList ? <Main title={gameDetails[gameIndex].name} players={playerList} /> : <Main title={gameDetails[gameIndex].name} />}
             </BottomContainer>
           </MainBody>
           <RightNav>

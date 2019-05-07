@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import $ from 'jquery';
+import ScoreBoard from './Scoreboard.jsx';
+import { get } from 'http';
 
 const MainContainer = styled.div`
   display: flex;
@@ -18,6 +20,7 @@ const Text = styled.div`
   font-family: cursive;
   font-size: 20px;
   padding: 5px;
+  text-decoration: underline;
 `;
 
 const AddPlayerInput = styled.input`
@@ -35,7 +38,6 @@ const AddPlayerInput = styled.input`
     box-shadow: 0 5px 15px rgba(0,0,0,0.6);
     transition: all 0.3s ease-in-out;
   }
-
 `;
 
 const List = styled.div`
@@ -51,10 +53,14 @@ const Players = styled.div`
   justify-content: center;
   font-family: fantasy;
   font-size: 16px;
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const Right = styled.div`
-
+  width: 65%;
 `;
 
 const RemoveModule = styled.div`
@@ -63,7 +69,7 @@ const RemoveModule = styled.div`
   justify-content: center;
   align-items: center;
   width: 35%;
-  height: 50%;
+  height: 70%;
   background-color: rgba(124, 126, 141, 0.6);
 `;
 
@@ -88,16 +94,24 @@ class Main extends React.Component {
       removePlayer: '',
     }
     this.removeHandler = this.removeHandler.bind(this);
+    this.getPlayers = this.getPlayers.bind(this);
   }
 
   componentDidMount() {
     this.getPlayers();
   }
 
+  componentWillReceiveProps() {
+    this.getPlayers();
+  }
+
   getPlayers() {
+    const { title } = this.props;
+
     $.ajax({
       method: 'GET',
       url: '/players',
+      data: { game: title },
       success: players => this.setState({ playerlist: players, addPlayer: '' }),
       error: err => console.log('fail to get players', err)
     });
@@ -105,13 +119,16 @@ class Main extends React.Component {
 
   addPlayer(e) {
     if (e.keyCode === 13) {
-      const { addPlayer } = this.state;
+      const { title } = this.props;
+      let { addPlayer } = this.state;
+      addPlayer = addPlayer[0].toUpperCase() + addPlayer.slice(1);
+      e.target.value = '';
       $.ajax({
         method: 'POST',
         url: '/addPlayer',
-        data: {name: addPlayer},
+        data: {name: addPlayer, title: title },
         success: () => {
-          this.setState({ addPlayer: ''}, this.getPlayers());
+          this.getPlayers();
         },
         error: err => console.log('fail to add player', err)
       });
@@ -119,7 +136,7 @@ class Main extends React.Component {
   }
 
   addPlayerHandle(e) {
-    this.setState({ [e.target.name]: e.target.value});
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   removeHandler() {
@@ -136,9 +153,10 @@ class Main extends React.Component {
   render() {
     const { playerlist } = this.state;
     const { removePopUp } = this.state;
+    const { title } = this.props;
+    const { players } = this.props;
     let key = [];
     if (playerlist) {key = Object.keys(playerlist)};
-
     return (
       <MainContainer>
         {removePopUp ? 
@@ -148,7 +166,7 @@ class Main extends React.Component {
         : null}
         <Left>
           <Text>Add Player</Text>
-          <AddPlayerInput name="addPlayer" onChange={e => this.addPlayerHandle(e)} onKeyDown={e => this.addPlayer(e)}/>
+          <AddPlayerInput name="addPlayer" onChange={e => this.addPlayerHandle(e)} onKeyDown={e => this.addPlayer(e)} />
           <Text>List of Players</Text>
           {key.length > 0 ? 
           <List>
@@ -158,7 +176,7 @@ class Main extends React.Component {
           </List> : null }
         </Left>
         <Right>
-
+          <ScoreBoard players={playerlist} title={title} refresh={this.getPlayers} />
         </Right>
       </MainContainer>
     )
