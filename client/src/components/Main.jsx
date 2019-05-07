@@ -71,7 +71,7 @@ const RemoveModule = styled.div`
   align-items: center;
   width: 30%;
   height: 70%;
-  background-color: rgba(124, 126, 141, 0.6);
+  background-color: rgba(124, 126, 141, 0.4);
 `;
 
 const RemoveButton = styled.div`
@@ -80,8 +80,9 @@ const RemoveButton = styled.div`
   align-items: center;
   width: 150px;
   height: 30px;
-  border: 4px double white;
-  background-color: silver;
+  border: 4px double silver;
+  background-color: white;
+  font-family: cursive;
 `;
 
 class Main extends React.Component {
@@ -161,7 +162,7 @@ class Main extends React.Component {
     return (
       <MainContainer>
         {removePopUp ? 
-          <RemoveModule>
+          <RemoveModule onClick={() => this.setState({ removePopUp: false })} >
             <RemoveButton onClick={this.removeHandler}>Remove Player</RemoveButton>
           </RemoveModule>
         : null}

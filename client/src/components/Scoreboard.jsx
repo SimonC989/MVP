@@ -73,7 +73,7 @@ const CountButton = styled.div`
   justify-content: center;
   align-items: center;
   height: 24px;
-  width: 10%;
+  width: 20%;
   border: 1px solid black;
   font-family: cursive;
 
@@ -132,9 +132,9 @@ class ScoreBoard extends React.Component {
     const { number } = this.state;
     let word = ''
     if (number === 1) {
-      word = 'minus'
+      word = 'Add count'
     } else {
-      word = 'plus'
+      word = 'Minus count'
     }
     return (
       <Container>
